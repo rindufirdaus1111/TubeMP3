@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TubeMP3 - Convert YouTube to MP3</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Montserrat:wght@400;500&display=swap">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1A103D, #2C1A5C);
+            color: #E2E8F0;
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            background: rgba(30, 30, 50, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 16px;
+            text-align: center;
+            border-bottom: 2px solid #FF2079;
+            animation: flicker 3s infinite alternate;
+        }
+
+        header h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: #FF2079;
+            font-weight: 700;
+            text-shadow: 0 0 10px #FF2079, 0 0 20px #FF2079;
+        }
+
+        main {
+            flex: 1;
+            max-width: 720px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        .converter {
+            background: rgba(30, 30, 50, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #00F0FF;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .converter:hover {
+            transform: translateY(-5px) rotateX(5deg);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            flex: 1;
+        }
+
+        #urlInput {
+            width: 100%;
+            padding: 12px 0;
+            border: none;
+            border-bottom: 2px solid #00F0FF;
+            background: transparent;
+            font-size: 0.95rem;
+            color: #E2E8F0;
+            outline: none;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        #urlInput:focus {
+            border-color: #FF2079;
+            box-shadow: 0 0 10px #FF2079;
+            animation: pulse 1.5s infinite;
+        }
+
+        #urlInput::placeholder {
+            color: #94A3B8;
+        }
+
+        .convert-btn {
+            padding: 12px 24px;
+            background: #FF2079;
+            color: #FFFFFF;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            text-shadow: 0 0 5px #FFFFFF;
+            box-shadow: 0 0 10px #FF2079, 0 0 20px #FF2079;
+            transition: transform 0.2s, box-shadow 0.3s;
+            animation: pulse 2s infinite;
+        }
+
+        .convert-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #FF2079, 0 0 30px #FF2079;
+        }
+
+        .format-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .tab {
+            padding: 8px 20px;
+            background: rgba(30, 30, 50, 0.85);
+            color: #00F0FF;
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid #00F0FF;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: color 0.3s, box-shadow 0.3s;
+        }
+
+        .tab.active {
+            color: #FFFFFF;
+            background: #FF2079;
+            border-color: #FF2079;
+            box-shadow: 0 0 10px #FF2079;
+        }
+
+        .tab:hover {
+            box-shadow: 0 0 10px #00F0FF;
+        }
+
+        .description {
+            background: rgba(30, 30, 50, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #00F0FF;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            margin: 24px 0;
+            transition: transform 0.3s;
+        }
+
+        .description:hover {
+            transform: translateY(-5px) rotateX(5deg);
+        }
+
+        .description h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: #00F0FF;
+            text-align: center;
+            text-shadow: 0 0 5px #00F0FF;
+        }
+
+        .description p {
+            font-size: 0.9rem;
+            text-align: justify;
+            color: #E2E8F0;
+        }
+
+        .steps {
+            background: rgba(30, 30, 50, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 24px;
+            border-radius: 12px;
+            border: 1px solid #00F0FF;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);
+            transition: transform 0.3s;
+        }
+
+        .steps:hover {
+            transform: translateY(-5px) rotateX(5deg);
+        }
+
+        .steps h2 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: #00F0FF;
+            text-align: center;
+            text-shadow: 0 0 5px #00F0FF;
+        }
+
+        .steps ol {
+            font-size: 0.9rem;
+            text-align: justify;
+            list-style-position: inside;
+            color: #E2E8F0;
+        }
+
+        .steps li {
+            margin: 8px 0;
+        }
+
+        footer {
+            background: rgba(30, 30, 50, 0.85);
+            backdrop-filter: blur(8px);
+            padding: 16px;
+            text-align: center;
+            border-top: 2px solid #FF2079;
+        }
+
+        footer p {
+            font-size: 0.85rem;
+            color: #94A3B8;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 5px #FF2079; }
+            50% { box-shadow: 0 0 15px #FF2079, 0 0 25px #FF2079; }
+            100% { box-shadow: 0 0 5px #FF2079; }
+        }
+
+        @keyframes flicker {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.95; }
+        }
+
+        @media (max-width: 600px) {
+            .input-container {
+                flex-direction: column;
+            }
+
+            .convert-btn {
+                width: 100%;
+            }
+
+            .format-tabs {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            header h1 {
+                font-size: 2rem;
+            }
+
+            .description h2, .steps h2 {
+                font-size: 1.25rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>TubeMP3</h1>
+    </header>
+    <main>
+        <section class="converter">
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input type="text" id="urlInput" placeholder="Masukkan URL YouTube">
+                </div>
+                <button class="convert-btn" onclick="convert()">Konversi</button>
+            </div>
+            <div class="format-tabs">
+                <button class="tab active" onclick="selectFormat('mp3')">MP3</button>
+                <button class="tab" onclick="selectFormat('mp4')">MP4</button>
+            </div>
+        </section>
+        <section class="description">
+            <h2>Konversi YouTube ke MP3</h2>
+            <p>TubeMP3 adalah alat konversi sederhana dan cepat yang memungkinkan Anda mengubah video YouTube favorit Anda menjadi file MP3 dengan mudah. Dengan antarmuka yang ramah pengguna, Anda dapat mengunduh musik atau audio berkualitas tinggi langsung dari platform YouTube. Pastikan Anda hanya mengonversi konten yang Anda miliki hak ciptanya atau telah diizinkan secara legal. Nikmati pengalaman mendengarkan yang fleksibel kapan saja, di mana saja!</p>
+        </section>
+        <section class="steps">
+            <h2>Langkah-Langkah Download</h2>
+            <ol>
+                <li>Salin URL video YouTube yang ingin Anda konversi.</li>
+                <li>Tempel URL tersebut pada kolom input di atas.</li>
+                <li>Pilih format yang diinginkan (MP3 atau MP4).</li>
+                <li>Klik tombol "Konversi" dan tunggu proses selesai.</li>
+                <li>Unduh file yang telah dikonversi ke perangkat Anda.</li>
+            </ol>
+        </section>
+    </main>
+    <footer>
+        <p>© 2025 TubeMP3. Hak cipta dilindungi undang-undang.</p>
+    </footer>
+    <script>
+        function selectFormat(format) {
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            console.log(`Selected format: ${format}`);
+        }
+
+        function convert() {
+            const url = document.getElementById('urlInput').value;
+            if (!url) {
+                alert('Masukkan URL YouTube yang valid!');
+                return;
+            }
+            alert('Memulai konversi untuk URL: ' + url);
+        }
+    </script>
+</body>
+</html>
